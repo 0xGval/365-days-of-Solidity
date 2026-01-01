@@ -1,1 +1,14 @@
 
+# Foundry
+out/
+cache/
+
+# Environment variables
+.env
+
+# OS files
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
