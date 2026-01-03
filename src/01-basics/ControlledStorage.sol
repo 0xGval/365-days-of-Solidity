@@ -18,7 +18,6 @@ Functional requirements:
 */
 
 contract ControlledStorage {
-
     /// @notice Public state variable holding the stored numeric value.
     /// @dev Declared as public to expose an auto-generated getter function.
     uint256 public number;

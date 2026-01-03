@@ -1,26 +1,22 @@
-# 02 – Basics
+# 03 – Actions
 
-This folder contains the second set of smart contracts in the *365 Days of Solidity* project.
+This folder contains the third set of smart contracts in the *365 Days of Solidity* project.
 
-The goal of this phase is to extend the foundational concepts introduced in Day 1 by
-moving from a single controlled value to a small but realistic registry pattern,
-while maintaining clarity, explicit rules, and disciplined testing.
+The goal of this phase is to introduce user-driven state transitions by extending
+the registry pattern with explicit role-based actions and identity-dependent rules.
 
 ---
 
-## ControlledRegistry
+## ControlledRegistryWithActions
 
 ### Purpose
 
-`ControlledRegistry` is a minimal smart contract designed to demonstrate how on-chain
-state can be managed when multiple entities are involved.
+`ControlledRegistryWithActions` extends the registry model introduced in Day 2 by
+allowing registered users to actively update their own stored state.
 
-The contract maintains a registry that associates addresses with numeric values and
-enforces strict write access through an owner-based access control mechanism.
-Registration status and stored values are tracked separately to avoid ambiguity and
-allow zero values as valid entries.
-
-All state changes are observable via events.
+The contract models a simple permission system where ownership and user actions
+are clearly separated, and where allowed behavior depends on both identity and
+prior state.
 
 ---
 
@@ -28,67 +24,77 @@ All state changes are observable via events.
 
 The contract implements the following behavior:
 
-- Maintains a registry mapping addresses to numeric values  
-- Tracks registration status separately from stored values  
-- Assigns an owner at deployment time  
-- Allows only the owner to register new addresses  
-- Allows only the owner to update values of registered addresses  
-- Allows anyone to read registration status and stored values  
-- Emits an event on every successful registration or update  
-- Explicitly reverts on unauthorized or invalid operations  
+- Assigns a single owner at deployment time  
+- Allows only the owner to register new users  
+- Associates each registered user with an initial numeric value  
+- Applies a predefined baseline value uniformly to all users at registration  
+- Allows registered users to update their own stored value  
+- Prevents users from modifying the state of other addresses  
+- Prevents non-registered addresses from performing user actions  
+- Explicitly reverts on all invalid or unauthorized operations  
+
+---
+
+### Access Model
+
+The contract defines two distinct roles:
+
+**Owner**
+- Responsible only for onboarding users
+- Cannot modify user values after registration
+- Cannot act on behalf of users
+
+**User**
+- Must be explicitly registered by the owner
+- Can update only their own stored value
+- Cannot access or modify other users’ state
+
+This separation ensures that user agency begins only after registration.
+
+---
+
+### Events and Observability
+
+State transitions are designed to be observable through events emitted on:
+
+- Successful user registration
+- Successful user-initiated value updates
+
+This enables off-chain systems to track meaningful changes in contract state.
 
 ---
 
 ### Concepts Covered
 
-This contract exercises and expands on several Solidity concepts:
+This contract introduces several new concepts compared to previous days:
 
-- Mappings and key-based storage  
-- Separation of existence tracking from stored data  
-- Ownership and access control  
-- Custom errors and explicit revert conditions  
-- Event-driven state change observability  
-- Clear separation of responsibilities between functions  
-
----
-
-### Testing
-
-The contract is covered by a dedicated test suite implemented with Foundry.
-
-The tests verify:
-
-- Correct ownership assignment at deployment  
-- Successful registration of new addresses by the owner  
-- Prevention of duplicate registrations  
-- Successful updates of registered values by the owner  
-- Enforcement of access control against non-owner addresses  
-
-Each test is small, focused, and validates a single expected behavior to ensure
-clarity and isolation.
+- Identity-based access control using `msg.sender`
+- User-driven state transitions
+- Role separation without role hierarchies
+- Enforcement of business rules via custom errors
+- Clear distinction between global policy and per-user actions
 
 ---
 
 ### Scope and Limitations
 
-This contract is intentionally scoped to remain simple and focused.
+This contract intentionally avoids:
 
-It does not include:
+- Deregistration or user removal
+- Role hierarchies beyond owner and user
+- External libraries
+- Upgradeability patterns
+- Gas optimizations
+- Production-level security hardening
 
-- Deregistration or deletion of entries  
-- Role-based access control beyond a single owner  
-- Upgradeability patterns  
-- Gas optimizations  
-- Production-level security hardening  
-
-The emphasis is on correctness, explicit rules, and maintainable structure.
+The focus remains on correctness, clarity, and predictable behavior.
 
 ---
 
 ### Notes
 
-This contract represents a natural progression from Day 1 by introducing
-multi-entity state management while preserving simplicity.
+This contract represents the first step toward modeling interactive systems
+where users actively modify on-chain state.
 
-It serves as a foundation for more advanced patterns involving collections,
-permissions, and state transitions in later phases of the project.
+It serves as a foundation for more advanced workflows involving permissions,
+state transitions, and user interactions in later phases of the project.

@@ -9,15 +9,22 @@ contract ControlledRegistryWithActionsTest is Test {
 
     address owner = address(this);
     address user = address(0xBEEF);
-    address otherUser = address(0xCAFE);
 
     function setUp() public {
         registry = new ControlledRegistryWithActions();
     }
 
+    /*//////////////////////////////////////////////////////////////
+                            DEPLOYMENT
+    //////////////////////////////////////////////////////////////*/
+
     function testOwnerIsDeployer() public {
         assertEq(registry.i_owner(), owner);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                            REGISTRATION
+    //////////////////////////////////////////////////////////////*/
 
     function testOwnerCanRegisterUser() public {
         registry.registerUser(user);
@@ -34,6 +41,10 @@ contract ControlledRegistryWithActionsTest is Test {
         );
         registry.registerUser(user);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                            USER ACTIONS
+    //////////////////////////////////////////////////////////////*/
 
     function testRegisteredUserCanUpdateOwnValue() public {
         registry.registerUser(user);
@@ -65,12 +76,5 @@ contract ControlledRegistryWithActionsTest is Test {
                 .selector
         );
         registry.updateNumber(42);
-    }
-
-    function testOwnerCannotUpdateUnlessRegistered() public {
-        vm.expectRevert(
-            ControlledRegistryWithActions.UserNotRegistered.selector
-        );
-        registry.updateNumber(10);
     }
 }
