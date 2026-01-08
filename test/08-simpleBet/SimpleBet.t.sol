@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 import "lib/forge-std/src/Test.sol";
-import "../../src/08-simpleBet/simpleBet.sol";
+import "../../src/08-simpleBet/SimpleBet.sol";
 
 contract SimpleBetTest is Test {
     SimpleBet betContract;

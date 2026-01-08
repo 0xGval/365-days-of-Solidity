@@ -9,11 +9,11 @@ and deterministic.
 
 ---
 
-## Simple1v1Bet
+## SimpleBet
 
 ### Purpose
 
-`Simple1v1Bet` allows two players to lock equal amounts of ETH into a bet.
+`SimpleBet` allows two players to lock equal amounts of ETH into a bet.
 An arbitrator, agreed upon by both parties at creation time, resolves
 the bet by selecting a winner.
 
@@ -36,11 +36,12 @@ There is no owner, admin, or privileged override.
 
 The contract follows a finite state machine:
 
+- `Uninitialized`: contract deployed, no bet created yet
 - `Created`: bet created by Player A
 - `Accepted`: Player B has accepted the bet
 - `Funded`: both players have deposited ETH
 - `Resolved`: arbitrator has resolved the bet
-- `Cancelled`: bet cancelled before funding
+- `Cancelled`: bet cancelled before full funding
 
 ---
 
@@ -50,6 +51,7 @@ The contract follows a finite state machine:
 
 - Player A creates the bet
 - Player B and arbitrator are fixed at creation
+- Arbitrator cannot be Player A or Player B
 - Bet amount is fixed
 - Initial state is `Created`
 - No ETH is deposited at creation
@@ -76,8 +78,8 @@ The contract follows a finite state machine:
 ### Cancellation
 
 - Only Player A may cancel
-- Cancellation allowed only before funding
-- No ETH is transferred
+- Cancellation allowed only before full funding (in `Created` or `Accepted` state)
+- If a player has already deposited, they are refunded
 - State transitions to `Cancelled`
 
 ---
@@ -87,19 +89,20 @@ The contract follows a finite state machine:
 - Both players must deposit the same amount
 - ETH can be transferred only once
 - After `Resolved` or `Cancelled`, no further actions are allowed
+- Arbitrator cannot be Player A or Player B
 - Arbitrator cannot deposit, cancel, or withdraw funds
 
 ---
 
 ## Events
 
-All meaningful state changes must emit events:
+All meaningful state changes emit events:
 
 - `BetCreated`
 - `BetAccepted`
-- `Funded`
-- `Resolved`
-- `Cancelled`
+- `BetFunded`
+- `BetResolved`
+- `BetCancelled`
 
 ---
 
