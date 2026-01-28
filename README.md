@@ -91,6 +91,18 @@ Every contract is designed to be:
 
 ---
 
+## Workflow
+
+Each day follows a structured process:
+
+1. **Spec generation** — I use Claude (Opus 4.5) to generate a detailed README for the new contract, including design constraints, security considerations, and test scenarios to cover.
+2. **Code writing** — I write the smart contract **from scratch**, using the generated spec as a reference. No AI-generated Solidity code.
+3. **Testing** — I write and run the tests myself using Foundry.
+
+The AI acts as a **spec writer and learning companion**, not as a code generator. Every line of Solidity in this repository is written by hand.
+
+---
+
 ## Philosophy
 
 This repository is not a collection of perfect examples.  
